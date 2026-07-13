@@ -43,12 +43,10 @@ jobs:
       - run: python3 -m pip install qmk && echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       # Step 5: Copy your keyboard definition into the vial-qmk tree
-      - run: |
-          # Sanity check: keyboards/ folder must exist. If this fails, you pushed the zip file
-          # instead of extracting it first. Unzip locally and push all extracted files.
-          test -d keyboards/handwired/macropad || (echo "ERROR: keyboards/handwired/macropad/ not found. Push the extracted zip contents, not the zip file itself." && exit 1)
+      - name: Prepare Keyboard
+        run: |
           mkdir -p vial-qmk/keyboards/handwired/macropad
-          rsync -av --delete keyboards/handwired/macropad/ vial-qmk/keyboards/handwired/macropad/
+          cp -R keyboards/handwired/macropad/* vial-qmk/keyboards/handwired/macropad/
 
       # Step 6: Verify required files are present before building
       - run: |
@@ -57,7 +55,10 @@ jobs:
           find vial-qmk/keyboards/handwired/macropad -type f -print
 
       # Step 7: Compile the firmware (V=1 = verbose output for debugging)
-      - run: cd vial-qmk && make handwired/macropad:vial V=1
+      - name: Build
+        run: |
+          cd vial-qmk
+          make handwired/macropad:vial
 
       # Step 8: Collect the compiled firmware file(s)
       - run: |
