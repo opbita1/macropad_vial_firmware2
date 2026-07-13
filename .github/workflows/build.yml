@@ -32,7 +32,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: vial-kb/vial-qmk
-          ref: 22
+          # Убираем строку ref: 22, пусть качает последнюю версию
           submodules: recursive
           path: vial-qmk
 
